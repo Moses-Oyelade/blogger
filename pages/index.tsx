@@ -33,7 +33,7 @@ export const getStaticProps: GetStaticProps = async () => {
     },
   });
   return {
-    props: { feed },
+    props: { feed : JSON.parse(JSON.stringify(feed)) },
     revalidate: 10,
   };
 };
