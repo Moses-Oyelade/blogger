@@ -10,7 +10,7 @@ import prisma from '../../lib/prisma';
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const post = await prisma.post.findUnique({
     where: {
-      id: String(params?.id),
+      id: Number(params?.id),
     },
     include: {
       author: {
@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     },
   });
   return {
-    props: post,
+    props: JSON.parse(JSON.stringify(post)),
   };
 };
 
@@ -28,6 +28,13 @@ async function publishPost(id: string): Promise<void> {
     method: 'PUT',
   });
   await Router.push('/');
+}
+
+async function deletePost(id: string): Promise<void> {
+  await fetch(`/api/post/${id}`, {
+    method: 'DELETE',
+  });
+  Router.push('/');
 }
 
 const Post: React.FC<PostProps> = (props) => {
@@ -42,13 +49,6 @@ const Post: React.FC<PostProps> = (props) => {
     title = `${title} (Draft)`;
   }
 
-  async function deletePost(id: string): Promise<void> {
-    await fetch(`/api/post/${id}`, {
-      method: 'DELETE',
-    });
-    Router.push('/');
-  }
-
   return (
     <Layout>
       <div>
@@ -60,7 +60,7 @@ const Post: React.FC<PostProps> = (props) => {
         )}
         {userHasValidSession && postBelongsToUser && (
           <button onClick={() => deletePost(props.id)}>Delete</button>
-        )};
+        )}
       </div>
       <style jsx>{`
         .page {

@@ -16,7 +16,7 @@ datasource db {
 // schema.prisma
 
 model Post {
-  id        String      @id @default(cuid())
+  id        Int         @id @default(autoincrement())
   createdAt DateTime    @default(now())
   title     String
   content   String?
@@ -75,3 +75,5 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+
